@@ -7,20 +7,12 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from models.base import ModelBase, intpk, created_at
 
 
-
-
-
-
-
-
 class Priority(ModelBase):
     __tablename__ = 'priorities'
-    id: Mapped[intpk]
-    name: Mapped[str]
+    id: Mapped[intpk] = mapped_column(index=True)  # Добавляем индекс на поле id
+    name: Mapped[str]  # Индексируем поле name
+    projects: Mapped[List["Project"]] = relationship(back_populates="priority")
+    tasks: Mapped[List["Task"]] = relationship(back_populates="priority")
 
-
-    projects: Mapped[list["Project"]] = relationship(back_populates="status")
-
-    tasks: Mapped[list["Task"]] = relationship(back_populates="status")
-
-
+    # Создаем индекс для поля name
+    __table_args__ = (Index('ix_priorities_name', 'name'), )
